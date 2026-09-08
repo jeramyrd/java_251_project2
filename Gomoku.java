@@ -8,6 +8,11 @@ import cs251.project2.*;
 
 public class Gomoku implements GomokuInterface{
 
+    //Interface methods
+    public int getNumRows() {return userSelectedNumRows;}
+    public int getNumCols(){ return userSelectedNumCols;}
+    public int getNumInLineForWin() {return userSelectedNumInLineForWin;}
+
     private int userSelectedNumCols = 0;
     private int userSelectedNumRows = 0;
     private int userSelectedNumInLineForWin = 0;
@@ -29,9 +34,7 @@ public class Gomoku implements GomokuInterface{
         }
         randomFirstPlayer();
     }
-    public int getNumRows() {return userSelectedNumRows;}
-    public int getNumCols(){ return userSelectedNumCols;}
-    public int getNumInLineForWin() {return userSelectedNumInLineForWin;}
+
 
     private void resetBoard(){
         gameBoard = new GomokuInterface.Square[userSelectedNumCols][userSelectedNumRows];
