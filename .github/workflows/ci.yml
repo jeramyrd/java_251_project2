@@ -42,10 +42,9 @@ jobs:
         uses: dorny/test-reporter@v3
         if: always()                # run even if tests fail
         with:
-          name: JUnit Tests         # check name
-          path: test-results/*.xml  # glob to your XML files
-          reporter: junit6
-          fail-on-error: false      # don’t fail the workflow if reporting fails
+          name: JEST Tests            # Name of the check run which will be created
+          path: reports/jest-*.xml    # Path to test results
+          reporter: jest-junit      # don’t fail the workflow if reporting fails
 
       - name: Archive test reports
         if: always()
