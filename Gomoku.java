@@ -12,7 +12,57 @@ public class Gomoku implements GomokuInterface{
     public int getNumRows() {return userSelectedNumRows;}
     public int getNumCols(){ return userSelectedNumCols;}
     public int getNumInLineForWin() {return userSelectedNumInLineForWin;}
+   public GomokuInterface.TurnResult handleClickAt(int row, int col){
+        // Prevent out-of-bound events.
+        if (row >= userSelectedNumRows || col >= userSelectedNumCols) { return GomokuInterface.TurnResult.GAME_NOT_OVER;}
+        if (isSpotFree(col, row)){ 
+            gameBoard[col][row] = currentTurn;
+            //changePlayer();
+            
+        // while(victoryIsBelongTo == GomokuInterface.TurnResult.GAME_NOT_OVER){
+            var computerMove = bestMove();
+            if (indexOnBoard(computerMove[0], computerMove[1])) {
+                gameBoard[computerMove[0]][computerMove[1]] = GomokuInterface.Square.CROSS;
+            }
+            else { return GomokuInterface.TurnResult.DRAW; }
+            //boardFullCheck(); //Draw if board is full (brute force check, not a smart check)
+            //changePlayer(); //game not over and change player.
+            isGameOver();
+        
+        //  computerMove = bestMove();
+        //  if (indexOnBoard(computerMove[0], computerMove[1])) {
+        //      gameBoard[computerMove[0]][computerMove[1]] = GomokuInterface.Square.RING;
+        //  }
+        // else { return GomokuInterface.TurnResult.DRAW; }
+            //boardFullCheck(); //Draw if board is full (brute force check, not a smart check)
+            //changePlayer(); //game not over and change player.
+        // isGameOver();
+        // }
+        }
+        return victoryIsBelongTo;
+    }
+    public void initGame() {
+        resetBoard();
+        victoryIsBelongTo = GomokuInterface.TurnResult.GAME_NOT_OVER;
+    }
 
+    public String getBoardString(){
+        StringBuilder boardSB = new StringBuilder();
+        for (int row = 0; row < userSelectedNumRows; ++row){
+            for (int col = 0; col < userSelectedNumCols; ++col){
+                boardSB.append(gameBoard[col][row].toChar());
+            }
+            boardSB.append('\n');
+        }
+        return boardSB.toString();
+    } 
+    public GomokuInterface.Square getCurrentPlayer(){
+        return currentTurn;
+    }
+    public void initComputerPlayer(String difficultyLevel){
+    }
+
+    
     private int userSelectedNumCols = 0;
     private int userSelectedNumRows = 0;
     private int userSelectedNumInLineForWin = 0;
@@ -45,16 +95,6 @@ public class Gomoku implements GomokuInterface{
         }
     }
 
-    public String getBoardString(){
-        StringBuilder boardSB = new StringBuilder();
-        for (int row = 0; row < userSelectedNumRows; ++row){
-            for (int col = 0; col < userSelectedNumCols; ++col){
-                boardSB.append(gameBoard[col][row].toChar());
-            }
-            boardSB.append('\n');
-        }
-        return boardSB.toString();
-    } 
 
     private void randomFirstPlayer(){
         Random coin = new Random();
@@ -66,47 +106,13 @@ public class Gomoku implements GomokuInterface{
         }
     }
 
-    public void initGame() {
-        resetBoard();
-        victoryIsBelongTo = GomokuInterface.TurnResult.GAME_NOT_OVER;
-    }
 
-    public GomokuInterface.Square getCurrentPlayer(){
-        return currentTurn;
-    }
 
-    public void initComputerPlayer(String difficultyLevel){
-    }
 
-    public GomokuInterface.TurnResult handleClickAt(int row, int col){
-        // Prevent out-of-bound events.
-        if (row >= userSelectedNumRows || col >= userSelectedNumCols) { return GomokuInterface.TurnResult.GAME_NOT_OVER;}
-        if (isSpotFree(col, row)){ 
-            gameBoard[col][row] = currentTurn;
-            //changePlayer();
-        
-        while(victoryIsBelongTo == GomokuInterface.TurnResult.GAME_NOT_OVER){
-        var computerMove = bestMove();
-        if (indexOnBoard(computerMove[0], computerMove[1])) {
-            gameBoard[computerMove[0]][computerMove[1]] = GomokuInterface.Square.CROSS;
-        }
-        else { return GomokuInterface.TurnResult.DRAW; }
-        //boardFullCheck(); //Draw if board is full (brute force check, not a smart check)
-        //changePlayer(); //game not over and change player.
-        isGameOver();
-    
-        computerMove = bestMove();
-        if (indexOnBoard(computerMove[0], computerMove[1])) {
-            gameBoard[computerMove[0]][computerMove[1]] = GomokuInterface.Square.RING;
-        }
-        else { return GomokuInterface.TurnResult.DRAW; }
-        //boardFullCheck(); //Draw if board is full (brute force check, not a smart check)
-        //changePlayer(); //game not over and change player.
-        isGameOver();
-        }
-    }
-        return victoryIsBelongTo;
-    }
+
+
+
+ 
 
     private Boolean isSpotFree(int col, int row){
         if (gameBoard[col][row] == GomokuInterface.Square.EMPTY) { return true; }
