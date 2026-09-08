@@ -1,8 +1,7 @@
 name: CI
 
 # Only run on PRs (so fork PRs can still upload the artifact with a read-only token)
-on:
-  pull_request:
+on: [push, pull_request]
 
 permissions:
   contents: read
