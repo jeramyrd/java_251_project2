@@ -3,9 +3,10 @@ name: Test Report
 # Fires only after the CI workflow completes on the default branch (main)
 on:
   workflow_run:
-    workflows: ['CI']
-    types:
-      - completed
+    workflows: ["CI"]
+    types: [completed]
+  push:
+    branches: [ main ]
 
 permissions:
   contents: read
