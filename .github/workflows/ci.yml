@@ -44,6 +44,7 @@ jobs:
         with:
           name: JUnit Tests         # check name
           path: test-results/*.xml  # glob to your XML files
+          reporter: junit6
           fail-on-error: false      # don’t fail the workflow if reporting fails
 
       - name: Archive test reports
