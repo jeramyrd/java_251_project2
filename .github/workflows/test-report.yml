@@ -1,12 +1,9 @@
 name: Test Report
 
-# Fires only after the CI workflow completes on the default branch (main)
 on:
   workflow_run:
     workflows: ["CI"]
     types: [completed]
-  push:
-    branches: [ main ]
 
 permissions:
   contents: read
@@ -15,24 +12,21 @@ permissions:
 
 jobs:
   report:
-    name: Publish Test Report
     runs-on: ubuntu-latest
-
     steps:
       - name: Download JUnit XML artifact
         uses: actions/download-artifact@v6
         with:
           name: test-results
-          path: test-results/*.xml
-          
+          # download into this local folder
+          path: test-results
+          # fetch from the CI workflow run that just completed
+          run-id: ${{ github.event.workflow_run.id }}
+
       - name: Annotate test results in Checks
         uses: dorny/test-reporter@v3
         with:
-          # matches the artifact you just downloaded
-          artifact: test-results 
-          # friendly check-run name in GitHub
-          name: JUnit Tests      
-          # files inside that artifact
+          artifact: test-results
+          name: JUnit Tests
           path: '*.xml'
-          # tell it to parse JUnit XML
-          reporter: java-junit  
+          reporter: java-junit
