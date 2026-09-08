@@ -1,0 +1,37 @@
+name: Test Report
+
+# Fires only after the CI workflow completes on the default branch (main)
+on:
+  workflow_run:
+    workflows: ['CI']
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  report:
+    name: Publish Test Report
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download JUnit XML artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: test-results
+          path: test-results
+
+      - name: Annotate test results in Checks
+        uses: dorny/test-reporter@v3
+        with:
+          # matches the artifact you just downloaded
+          artifact: test-results 
+          # friendly check-run name in GitHub
+          name: JUnit Tests      
+          # files inside that artifact
+          path: '*.xml'
+          # tell it to parse JUnit XML
+          reporter: java-junit  
