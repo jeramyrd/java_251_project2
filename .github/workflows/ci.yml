@@ -1,12 +1,17 @@
 name: CI
 
-# Only run on PRs (so fork PRs can still upload the artifact with a read-only token)
-on: [push, pull_request]
+on:
+  push:
+    # run on pushes to any branch (or restrict to main if you like)
+    branches: [ '**' ]
+  pull_request:
+    # run on PRs as before
+    branches: [ '**' ]
 
 permissions:
-  contents: read
-  actions: read
-  checks: write
+  contents: read    # you need to read source
+  actions:  read    # to download artifacts
+  checks:   write   # to annotate the check run
 
 jobs:
   build-test:
@@ -39,9 +44,32 @@ jobs:
             --scan-class-path \
             --reports-dir=test-results
 
+      # upload even if tests fail so the reporter can pick up failures
       - name: Upload JUnit XML artifact
         if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
           name: test-results
           path: test-results/
+
+  report:
+    name: Publish Test Report
+    runs-on: ubuntu-latest
+    needs: build-test
+    # run regardless of success/failure so you get annotations on failures too
+    if: ${{ always() }}
+
+    steps:
+      - name: Download JUnit XML artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: test-results
+          path: test-results
+
+      - name: Annotate test results in Checks
+        uses: dorny/test-reporter@v3
+        with:
+          artifact: test-results
+          name: JUnit Tests
+          path: '*.xml'
+          reporter: java-junit
