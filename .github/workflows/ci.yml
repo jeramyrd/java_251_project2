@@ -37,6 +37,15 @@ jobs:
           --details=flat \
           --reports-dir=test-results
 
+      - name: Report test results to GitHub
+        uses: dorny/test-reporter@v1
+        if: always()                # run even if tests fail
+        with:
+          name: JUnit Tests         # check name
+          path: test-results/*.xml  # glob to your XML files
+          reporter: junit            # type of report
+          fail-on-error: false      # don’t fail the workflow if reporting fails
+
       - name: Archive test reports
         if: always()
         uses: actions/upload-artifact@main
