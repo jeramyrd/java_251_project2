@@ -1,0 +1,13 @@
+{
+  "java.checkstyle.enabled": true,
+  "java.checkstyle.configuration": "${workspaceFolder}/checkstyle.xml",
+  "java.checkstyle.useMavenConfiguration": false,
+  "java.project.referencedLibraries": [
+    "${workspaceFolder}/project2.jar",
+    "${workspaceFolder}/junit-jupiter-api-6.1.3.jar",
+    "${workspaceFolder}/junit-jupiter-engine-6.1.3.jar",
+    "${workspaceFolder}/junit-platform-console-standalone-6.1.3.jar"
+  ],
+  "java.project.sourcePaths": ["."],
+  "java.project.outputPath": "${workspaceFolder}/bin"
+}

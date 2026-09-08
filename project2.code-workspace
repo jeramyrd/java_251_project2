@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.project.referencedLibraries": [
+			"./project2.jar",
+			"test-lib/**/*.jar"
+		],
+		"java.debug.settings.onBuildFailureProceed": true
+	}
+}
