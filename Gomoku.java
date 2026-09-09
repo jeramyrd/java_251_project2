@@ -11,28 +11,28 @@ public class Gomoku implements GomokuInterface{
     public int getNumRows() {return userSelectedNumRows;}
     public int getNumCols(){ return userSelectedNumCols;}
     public int getNumInLineForWin() {return userSelectedNumInLineForWin;}
-    public GomokuInterface.TurnResult handleClickAt(int row, int col){
+    public TurnResult handleClickAt(int row, int col){
         // Prevent out-of-bound events.
-        if (row >= userSelectedNumRows || col >= userSelectedNumCols) { return GomokuInterface.TurnResult.GAME_NOT_OVER;}
+        if (row >= userSelectedNumRows || col >= userSelectedNumCols) { return TurnResult.GAME_NOT_OVER;}
         if (isSpotFree(col, row)){ 
             gameBoard[col][row] = currentTurn;
             //changePlayer();
             
-        // while(victoryIsBelongTo == GomokuInterface.TurnResult.GAME_NOT_OVER){
+        // while(victoryIsBelongTo == TurnResult.GAME_NOT_OVER){
             var computerMove = bestMove();
             if (indexOnBoard(computerMove[0], computerMove[1])) {
-                gameBoard[computerMove[0]][computerMove[1]] = GomokuInterface.Square.CROSS;
+                gameBoard[computerMove[0]][computerMove[1]] = Square.CROSS;
             }
-            else { return GomokuInterface.TurnResult.DRAW; }
+            else { return TurnResult.DRAW; }
             //boardFullCheck(); //Draw if board is full (brute force check, not a smart check)
             //changePlayer(); //game not over and change player.
             isGameOver();
         
         //  computerMove = bestMove();
         //  if (indexOnBoard(computerMove[0], computerMove[1])) {
-        //      gameBoard[computerMove[0]][computerMove[1]] = GomokuInterface.Square.RING;
+        //      gameBoard[computerMove[0]][computerMove[1]] = Square.RING;
         //  }
-        // else { return GomokuInterface.TurnResult.DRAW; }
+        // else { return TurnResult.DRAW; }
             //boardFullCheck(); //Draw if board is full (brute force check, not a smart check)
             //changePlayer(); //game not over and change player.
         // isGameOver();
@@ -42,7 +42,7 @@ public class Gomoku implements GomokuInterface{
     }
     public void initGame() {
         resetBoard();
-        victoryIsBelongTo = GomokuInterface.TurnResult.GAME_NOT_OVER;
+        victoryIsBelongTo = TurnResult.GAME_NOT_OVER;
     }
     public String getBoardString(){
         StringBuilder boardSB = new StringBuilder();
@@ -54,7 +54,7 @@ public class Gomoku implements GomokuInterface{
         }
         return boardSB.toString();
     }
-    public GomokuInterface.Square getCurrentPlayer(){
+    public Square getCurrentPlayer(){
         return currentTurn;
     }
     public void initComputerPlayer(String difficultyLevel){
@@ -64,8 +64,8 @@ public class Gomoku implements GomokuInterface{
     private int userSelectedNumCols = 0;
     private int userSelectedNumRows = 0;
     private int userSelectedNumInLineForWin = 0;
-    private GomokuInterface.Square currentTurn = GomokuInterface.Square.EMPTY;
-    private GomokuInterface.TurnResult victoryIsBelongTo = GomokuInterface.TurnResult.GAME_NOT_OVER;
+    private Square currentTurn = Square.EMPTY;
+    private TurnResult victoryIsBelongTo = TurnResult.GAME_NOT_OVER;
 
     public Gomoku(String[] args){
         int[] validatedStartParameters = ArgCheck.validateStartStrings(args);
@@ -82,12 +82,12 @@ public class Gomoku implements GomokuInterface{
         randomFirstPlayer();
     }
 
-    private GomokuInterface.Square[][] gameBoard; 
+    private Square[][] gameBoard; 
     private void resetBoard(){
-        gameBoard = new GomokuInterface.Square[userSelectedNumCols][userSelectedNumRows];
+        gameBoard = new Square[userSelectedNumCols][userSelectedNumRows];
         for (int row = 0; row < userSelectedNumRows; ++row){
             for (int col = 0; col < userSelectedNumCols; ++col){
-                gameBoard[col][row] = GomokuInterface.Square.EMPTY;
+                gameBoard[col][row] = Square.EMPTY;
             }
         }
     }
@@ -96,15 +96,15 @@ public class Gomoku implements GomokuInterface{
         return false;
     }
     private Boolean isSpotFree(int col, int row){
-        if (gameBoard[col][row] == GomokuInterface.Square.EMPTY) { return true; }
+        if (gameBoard[col][row] == Square.EMPTY) { return true; }
         return false;
     }
     private Boolean isGameOver(){
         int[] winnerCount = {0, 0}; //crossCount, ringCount
         var allDirectionArrays = grabAllPossibleDirections();
 
-        for(GomokuInterface.Square[] item: allDirectionArrays){
-            updateWinnerCount(winnerCount,GomokuInterface.Square.EMPTY);
+        for(Square[] item: allDirectionArrays){
+            updateWinnerCount(winnerCount,Square.EMPTY);
             for (int index = 0; index < item.length; ++index){
                 updateWinnerCount(winnerCount, item[index]);
                 if (isThereAWinner(winnerCount)) {return true;}
@@ -113,8 +113,8 @@ public class Gomoku implements GomokuInterface{
         System.out.println();
         return false; 
     }
-    private List<GomokuInterface.Square[]> grabAllPossibleDirections(){
-        List<GomokuInterface.Square[]> possibleWinArray = new ArrayList<>();
+    private List<Square[]> grabAllPossibleDirections(){
+        List<Square[]> possibleWinArray = new ArrayList<>();
         int[] diagonalUp = {-1, 1}; //column delta, row delta
         int[] accross = {1, 0};
         int[] diagonalDown = {1, 1};
@@ -130,8 +130,8 @@ public class Gomoku implements GomokuInterface{
         }
         return possibleWinArray;
     }
-    private GomokuInterface.Square[] extractArray(int columnStart, int rowStart, int[] direction){
-        List<GomokuInterface.Square> values = new ArrayList<>();
+    private Square[] extractArray(int columnStart, int rowStart, int[] direction){
+        List<Square> values = new ArrayList<>();
         int rowIndex = rowStart, columnIndex = columnStart;
         Boolean rowInRange = false;
         Boolean columnInRange = false;
@@ -145,9 +145,9 @@ public class Gomoku implements GomokuInterface{
             columnIndex += direction[0];
             rowIndex += direction[1];
         }
-        return values.toArray(new GomokuInterface.Square[0]);
+        return values.toArray(new Square[0]);
     }
-    private void updateWinnerCount(int[] winnerCount, GomokuInterface.Square square){
+    private void updateWinnerCount(int[] winnerCount, Square square){
          switch (square) {
             case CROSS:
                 ++winnerCount[0];
@@ -164,11 +164,11 @@ public class Gomoku implements GomokuInterface{
     }
     private Boolean isThereAWinner(int[] winnerCount){
         if (winnerCount[0] == userSelectedNumInLineForWin) {
-            victoryIsBelongTo = GomokuInterface.TurnResult.CROSS_WINS;
+            victoryIsBelongTo = TurnResult.CROSS_WINS;
             return true;
         }
         if (winnerCount[1] == userSelectedNumInLineForWin) {
-            victoryIsBelongTo = GomokuInterface.TurnResult.RING_WINS;
+            victoryIsBelongTo = TurnResult.RING_WINS;
             return true;
         }
         return false; //No winner :(
@@ -190,18 +190,18 @@ public class Gomoku implements GomokuInterface{
     private void randomFirstPlayer(){
         Random coin = new Random();
         if(coin.nextBoolean()){
-            currentTurn = GomokuInterface.Square.RING;
+            currentTurn = Square.RING;
         }
         else{
-            currentTurn = GomokuInterface.Square.RING;
+            currentTurn = Square.RING;
         }
     }
     private void changePlayer(){
-        if (currentTurn == GomokuInterface.Square.CROSS){
-            currentTurn = GomokuInterface.Square.RING;
+        if (currentTurn == Square.CROSS){
+            currentTurn = Square.RING;
         }
         else {
-            currentTurn = GomokuInterface.Square.CROSS;
+            currentTurn = Square.CROSS;
         }
     }
 
