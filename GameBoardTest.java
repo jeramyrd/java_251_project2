@@ -27,4 +27,13 @@ class GameBoardTest {
         GameBoard board = new GameBoard(3, 3);
         assertInstanceOf(Square.class,  board.getSquare(1,1));
     }
+
+    @Test
+    void throwsOutOfIndexError() {
+        GameBoard board = new GameBoard(3,3);
+        assertThrows(IndexOutOfBoundsException.class,
+            () -> board.getSquare(4,4),
+            "index out of bounds should throw");
+    }
+
 }
