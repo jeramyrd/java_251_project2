@@ -1,18 +1,26 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import cs251.project2.GomokuInterface.Square;
+import cs251.project2.GomokuInterface.TurnResult;
 
 public class GameBoard {
 
     private int maxColumns;
     private int maxRows;
+    private int numberToWin;
+    private TurnResult winner;
     private Square[][] board;
 
     public GameBoard() {
-        throw new UnsupportedOperationException("Must call GameBoard(cols, rows) instead");
+        throw new UnsupportedOperationException("Must call GameBoard(cols, rows, numToWin) instead");
     }
     
-    public GameBoard(int columns, int rows){
+    public GameBoard(int columns, int rows, int numToWin){
         maxColumns = columns;
         maxRows = rows;
+        numberToWin = numToWin;
+        winner = TurnResult.GAME_NOT_OVER;
         board = new Square[maxColumns][maxRows];
         resetBoard();
     }
@@ -48,27 +56,21 @@ public class GameBoard {
         if (board[col][row] == Square.EMPTY) { return true; }
         return false;
     }
-}
 
-/*
-    private Square[][] gameBoard; 
-
-
-
-    private Boolean isGameOver(){
+    public TurnResult setTurnResult(){
         int[] winnerCount = {0, 0}; //crossCount, ringCount
-        var allDirectionArrays = grabAllPossibleDirections();
+        var allDirectionArrays = grabAllPossibleDirections(); //Create a list of all possible win directions
 
-        for(Square[] item: allDirectionArrays){
-            updateWinnerCount(winnerCount,Square.EMPTY);
+        for(Square[] item: allDirectionArrays){ 
+            winnerCount = new int[] {0, 0}; //reset the count for each new possible-win array.
             for (int index = 0; index < item.length; ++index){
                 updateWinnerCount(winnerCount, item[index]);
-                if (isThereAWinner(winnerCount)) {return true;}
+                checkForWin(winnerCount);
             }
         }
-        System.out.println();
-        return false; 
+        return winner;
     }
+
     private List<Square[]> grabAllPossibleDirections(){
         List<Square[]> possibleWinArray = new ArrayList<>();
         int[] diagonalUp = {-1, 1}; //column delta, row delta
@@ -76,33 +78,36 @@ public class GameBoard {
         int[] diagonalDown = {1, 1};
         int[] down = {0, 1};
         
-        for (int columnSpotStart = 0, rowSpotStart = 0; columnSpotStart < 2*userSelectedNumCols - 1; ++columnSpotStart){
+        for (int columnSpotStart = 0, rowSpotStart = 0; columnSpotStart < 2*maxColumns - 1; ++columnSpotStart){
             possibleWinArray.add(extractArray(columnSpotStart, rowSpotStart, diagonalUp));
             possibleWinArray.add(extractArray(columnSpotStart, rowSpotStart, down));
         }
-        for (int columnSpotStart = 0, rowSpotStart = -userSelectedNumRows + 1; rowSpotStart < userSelectedNumRows; ++rowSpotStart){
+        for (int columnSpotStart = 0, rowSpotStart = -maxRows + 1; rowSpotStart < maxRows; ++rowSpotStart){
             possibleWinArray.add(extractArray(columnSpotStart, rowSpotStart, diagonalDown));
             possibleWinArray.add(extractArray(columnSpotStart, rowSpotStart, accross));
         }
         return possibleWinArray;
     }
+
     private Square[] extractArray(int columnStart, int rowStart, int[] direction){
         List<Square> values = new ArrayList<>();
         int rowIndex = rowStart, columnIndex = columnStart;
-        Boolean rowInRange = false;
-        Boolean columnInRange = false;
-        int maxSteps = Math.max(userSelectedNumCols, userSelectedNumRows);
+        //Boolean rowInRange = false;
+        //Boolean columnInRange = false;
+        int maxSteps = Math.max(numberToWin, numberToWin);
         for(int step = 0; step < maxSteps; ++step){
-            rowInRange = false;
-            columnInRange = false;
-            if (rowIndex >= 0 && rowIndex < userSelectedNumRows) { rowInRange = true; }
-            if (columnIndex >= 0 && columnIndex < userSelectedNumCols) { columnInRange = true; }
-            if (rowInRange && columnInRange ){ values.add(gameBoard[columnIndex][rowIndex]); }
+            //rowInRange = false;
+            //columnInRange = false;
+            //if (rowIndex >= 0 && rowIndex < maxRows) { rowInRange = true; }
+            //if (columnIndex >= 0 && columnIndex < maxColumns) { columnInRange = true; }
+            //if (rowInRange && columnInRange ){ values.add(board[columnIndex][rowIndex]); }
+            if ( isSpotOnBoard(columnIndex, rowIndex)) { values.add(board[columnIndex][rowIndex]); };
             columnIndex += direction[0];
             rowIndex += direction[1];
         }
         return values.toArray(new Square[0]);
     }
+
     private void updateWinnerCount(int[] winnerCount, Square square){
          switch (square) {
             case CROSS:
@@ -118,17 +123,29 @@ public class GameBoard {
                 winnerCount[1]= 0;
         }
     }
-    private Boolean isThereAWinner(int[] winnerCount){
-        if (winnerCount[0] == userSelectedNumInLineForWin) {
-            victoryIsBelongTo = TurnResult.CROSS_WINS;
-            return true;
+
+    private void checkForWin(int[] winnerCount){
+        //Due to how the game plays, we won't ever have both of these true at the same time.
+        //So we don't need to make sure the other is not true.
+        if (winnerCount[0] == numberToWin) {
+            winner = TurnResult.CROSS_WINS;
         }
-        if (winnerCount[1] == userSelectedNumInLineForWin) {
-            victoryIsBelongTo = TurnResult.RING_WINS;
-            return true;
+        if (winnerCount[1] == numberToWin) {
+            winner = TurnResult.RING_WINS;
         }
-        return false; //No winner :(
     }
+
+}
+/*
+    private Square[][] gameBoard; 
+
+
+
+   
+    
+   
+    
+// Needed for my computer player math.
     private List<int[]> listEmptySpots(){
         List<int[]> emptySpots = new ArrayList<>();
         for(int row = 0; row < userSelectedNumRows; ++row){

@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 
 import cs251.project2.GomokuInterface.Square;
+import cs251.project2.GomokuInterface.TurnResult;
 
 class GameBoardTest {
 
     GameBoard board;
     @BeforeEach
     void createInstance() {
-        board = new GameBoard(3, 3);
+        board = new GameBoard(3, 3, 3);
     }
 
     @Test
@@ -56,5 +57,37 @@ class GameBoardTest {
     @Test
     void returnTrueForEmptyValidSpot() {
         assertEquals(true, board.attemptPlayAtSpot(1, 1, Square.CROSS));
+    }
+
+    @Test
+    void checkForCrossWinOne() {
+        board.attemptPlayAtSpot(0, 0, Square.CROSS);
+        board.attemptPlayAtSpot(1, 0, Square.CROSS);
+        board.attemptPlayAtSpot(2, 0, Square.CROSS);
+        assertEquals(TurnResult.CROSS_WINS, board.setTurnResult());
+    }
+
+    @Test
+    void checkForCrossWinTwo() {
+        board.attemptPlayAtSpot(0, 0, Square.CROSS);
+        board.attemptPlayAtSpot(1, 1, Square.CROSS);
+        board.attemptPlayAtSpot(2, 2, Square.CROSS);
+        assertEquals(TurnResult.CROSS_WINS, board.setTurnResult());
+    }
+
+    @Test
+    void checkForRingWinOne() {
+        board.attemptPlayAtSpot(0, 0, Square.RING);
+        board.attemptPlayAtSpot(0, 1, Square.RING);
+        board.attemptPlayAtSpot(0, 2, Square.RING);
+        assertEquals(TurnResult.RING_WINS, board.setTurnResult());
+    }
+
+    @Test
+    void checkForGameNotOver() {
+        board.attemptPlayAtSpot(0, 0, Square.RING);
+        board.attemptPlayAtSpot(0, 1, Square.CROSS);
+        board.attemptPlayAtSpot(0, 2, Square.RING);
+        assertEquals(TurnResult.GAME_NOT_OVER, board.setTurnResult());
     }
 }
