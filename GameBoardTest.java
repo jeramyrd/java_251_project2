@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import cs251.project2.Interface.Square;
+import cs251.project2.GomokuInterface.Square;
 
 class GameBoardTest {
 
@@ -17,8 +17,4 @@ class GameBoardTest {
        // GameBoard board = new GameBoard(3, 3);
       //  assertInstanceOf(Square, board[1][1]);
     }
-
-
-
-
 }
