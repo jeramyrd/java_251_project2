@@ -1,9 +1,6 @@
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-//import cs251.project2.*;
-
-//import org.junit.jupiter.api.BeforeEach;
 
 class ArgCheckTest{
     @Test
