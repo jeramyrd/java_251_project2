@@ -1,9 +1,18 @@
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+
 import cs251.project2.GomokuInterface.Square;
 
 class GameBoardTest {
+
+    GameBoard board;
+    @BeforeEach
+    void createInstance() {
+        board = new GameBoard(3, 3);
+    }
 
     @Test
     void defaultConstructorFails() {
@@ -14,7 +23,6 @@ class GameBoardTest {
 
     @Test
     void newBoardIsFullOfEmptySquares() {
-        GameBoard board = new GameBoard(3, 3);
         for(int row = 0; row < 3; ++row){
             for(int col = 0; col < 3; ++col){
                 assertEquals(Square.EMPTY,  board.getSquare(col, row));
@@ -24,16 +32,18 @@ class GameBoardTest {
 
     @Test
     void boardIsMadeOfSquareEnums() {
-        GameBoard board = new GameBoard(3, 3);
         assertInstanceOf(Square.class,  board.getSquare(1,1));
     }
 
     @Test
     void throwsOutOfIndexError() {
-        GameBoard board = new GameBoard(3,3);
         assertThrows(IndexOutOfBoundsException.class,
             () -> board.getSquare(4,4),
             "index out of bounds should throw");
     }
 
+    @Test
+    void spotIsFull() {
+    //    public Boolean attemptPlayAtSpot(int col, int row, Square player){
+    }
 }

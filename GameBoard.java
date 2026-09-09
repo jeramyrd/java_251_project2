@@ -26,24 +26,34 @@ public class GameBoard {
     }
 
     public Square getSquare(int col, int row){
-        return board[0][0];
+        return board[col][row];
     }
 
-}
+    public Boolean attemptPlayAtSpot(int col, int row, Square player){
+        if (!isSpotOnBoard(col, row)) {return false;}
+        if (isSpotFree(col, row)){
+            board[col][row] = player;
+            return true;
+        }
+        else { return false;}
+    }
 
-
-/*
-    private Square[][] gameBoard; 
-
-    private Boolean indexOnBoard(int col, int row){
-        if ((col >= 0 && col < userSelectedNumCols) && (row >= 0 && row < userSelectedNumRows)) { return true; }
+    private Boolean isSpotOnBoard(int col, int row){
+        if ((col >= 0 && col < maxColumns) && (row >= 0 && row < maxRows)) { return true; }
         return false;
     }
 
     private Boolean isSpotFree(int col, int row){
-        if (gameBoard[col][row] == Square.EMPTY) { return true; }
+        if (board[col][row] == Square.EMPTY) { return true; }
         return false;
     }
+}
+
+/*
+    private Square[][] gameBoard; 
+
+
+
     private Boolean isGameOver(){
         int[] winnerCount = {0, 0}; //crossCount, ringCount
         var allDirectionArrays = grabAllPossibleDirections();

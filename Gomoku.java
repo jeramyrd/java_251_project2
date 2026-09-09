@@ -15,7 +15,7 @@ public class Gomoku implements GomokuInterface{
         // Prevent out-of-bound events.
         if (row >= userSelectedNumRows || col >= userSelectedNumCols) { return TurnResult.GAME_NOT_OVER;}
         if (isSpotFree(col, row)){ 
-            gameBoard[col][row] = currentTurn;
+            gameBoard[col][row] = currentTurn; //TODO -> NEED TO CHANGE THIS TO playSpot
             //changePlayer();
             
         // while(victoryIsBelongTo == TurnResult.GAME_NOT_OVER){
