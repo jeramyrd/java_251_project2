@@ -20,13 +20,13 @@ public class GameBoard {
     private void resetBoard(){
         for (int row = 0; row < maxRows; ++row){
             for (int col = 0; col < maxColumns; ++col){
-                board[col][row] = Square.CROSS;
+                board[col][row] = Square.EMPTY;
             }
         }
     }
 
     public Square getSquare(int col, int row){
-        return board[col][row];
+        return board[0][0];
     }
 
 }
