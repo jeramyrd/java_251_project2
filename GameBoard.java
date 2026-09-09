@@ -20,7 +20,7 @@ public class GameBoard {
     private void resetBoard(){
         for (int row = 0; row < maxRows; ++row){
             for (int col = 0; col < maxColumns; ++col){
-                board[col][row] = Square.EMPTY;
+                board[col][row] = Square.CROSS;
             }
         }
     }
