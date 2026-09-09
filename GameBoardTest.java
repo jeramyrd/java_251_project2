@@ -13,8 +13,18 @@ class GameBoardTest {
     }
 
     @Test
+    void newBoardIsFullOfEmptySquares() {
+        GameBoard board = new GameBoard(3, 3);
+        for(int row = 0; row < 3; ++row){
+            for(int col = 0; col < 3; ++col){
+                assertEquals(Square.EMPTY,  board.getSquare(col, row));
+            }
+        }
+    }
+
+    @Test
     void boardIsMadeOfSquareEnums() {
-       // GameBoard board = new GameBoard(3, 3);
-      //  assertInstanceOf(Square, board[1][1]);
+        GameBoard board = new GameBoard(3, 3);
+        assertInstanceOf(Square.class,  board.getSquare(1,1));
     }
 }
