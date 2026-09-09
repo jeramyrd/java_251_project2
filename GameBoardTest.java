@@ -43,7 +43,17 @@ class GameBoardTest {
     }
 
     @Test
-    void spotIsFull() {
-    //    public Boolean attemptPlayAtSpot(int col, int row, Square player){
+    void returnFalseIfSpotIsFull() {
+        assertEquals(false, board.attemptPlayAtSpot(1, 1, Square.CROSS));
+    }
+
+    @Test
+    void returnFalseForOutOfBoundsPlay() {
+        assertEquals(false, board.attemptPlayAtSpot(10, 10, Square.CROSS));
+    }
+
+    @Test
+    void returnTrueForEmptyValidSpot() {
+        assertEquals(true, board.attemptPlayAtSpot(10, 10, Square.CROSS));
     }
 }
