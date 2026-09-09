@@ -31,12 +31,12 @@ public class GameBoard {
 
     public Boolean attemptPlayAtSpot(int col, int row, Square player){
         if (isSpotOnBoard(col, row)) { //I don't like short-ciruit tests, but that could work here.
-            if (isSpotFree(col, row)) {
+            if (isSpotFree(col, row)) {  //Play is valid
                 board[col][row] = player;
-                return false;
+                return true; 
             }
         }
-        return true;
+        return false; //Play is not valid
     }
 
     private Boolean isSpotOnBoard(int col, int row){
