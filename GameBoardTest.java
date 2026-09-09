@@ -44,6 +44,7 @@ class GameBoardTest {
 
     @Test
     void returnFalseIfSpotIsFull() {
+        board.attemptPlayAtSpot(1, 1, Square.CROSS);
         assertEquals(false, board.attemptPlayAtSpot(1, 1, Square.CROSS));
     }
 
@@ -54,6 +55,6 @@ class GameBoardTest {
 
     @Test
     void returnTrueForEmptyValidSpot() {
-        assertEquals(true, board.attemptPlayAtSpot(10, 10, Square.CROSS));
+        assertEquals(true, board.attemptPlayAtSpot(1, 1, Square.CROSS));
     }
 }
