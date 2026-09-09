@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir -p bin
           javac -d bin \
-            -cp "project2.jar:junit-jupiter-api-6.1.3.jar" \
+            -cp "project2.jar:junit-platform-console-standalone-6.1.3.jar" \
             *.java
 
       - name: Run JUnit and emit XML
