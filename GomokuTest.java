@@ -26,8 +26,8 @@ class GomokuTest{
     @Test
     void testGoodArgsInitializationGivesUnique(){     
         Gomoku game = new Gomoku(new String[] {"20", "25", "7"});
-        assertEquals(20, game.getNumRows(), "Should return the default value for number of rows");
-        assertEquals(25, game.getNumCols(), "Should return the default value for number of columns");
+        assertEquals(25, game.getNumRows(), "Should return the default value for number of rows");
+        assertEquals(20, game.getNumCols(), "Should return the default value for number of columns");
         assertEquals(7, game.getNumInLineForWin(), "Should return the given set for size of NumInLineForWin.");
     }
 
@@ -49,7 +49,7 @@ class GomokuTest{
 
     @Test 
     void resetBoardSmallRec(){
-        Gomoku game = new Gomoku(new String[] {"3", "10", "3"});
+        Gomoku game = new Gomoku(new String[] {"10", "3", "3"});
         String smallBoardZeros = "----------\n----------\n----------\n";
         game.initGame();
         assertEquals(smallBoardZeros, game.getBoardString(), "Small board should match");

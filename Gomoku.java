@@ -1,10 +1,6 @@
 
 import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
-
 import cs251.project2.*;
-import cs251.project2.GomokuInterface.TurnResult;
 
 public class Gomoku implements GomokuInterface{
     
@@ -18,14 +14,16 @@ public class Gomoku implements GomokuInterface{
 
     public Gomoku(String[] args){
         int[] validatedStartParameters = ArgCheck.validateStartStrings(args);
+        for(int arg: validatedStartParameters){
+            System.out.print("Arg: " + arg);
+        }
         computerSelection = validatedStartParameters[0];
-
         if (validatedStartParameters.length > 1){ //only filled if valid.
             gameBoard = new GameBoard(validatedStartParameters[1], validatedStartParameters[2], validatedStartParameters[3]);
         }
         else{
 
-            gameBoard = new GameBoard(DEFAULT_NUM_ROWS, DEFAULT_NUM_COLS, SQUARES_IN_LINE_FOR_WIN);            
+            gameBoard = new GameBoard(DEFAULT_NUM_COLS, DEFAULT_NUM_ROWS, SQUARES_IN_LINE_FOR_WIN);            
         }
         minervaPlayer = new Minerva(gameBoard);
         computerPlayer = new Computer(gameBoard);
@@ -75,7 +73,7 @@ public class Gomoku implements GomokuInterface{
 
     public void initGame() {
         gameBoard.resetBoard();
-        if (currentTurn == computerTurn) {
+        if (currentTurn == computerTurn && computerSelection > 0) {
             runComputerTurn(); //We don't care about the return result, its the first move.
         }
     }

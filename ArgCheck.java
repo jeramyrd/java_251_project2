@@ -1,4 +1,4 @@
-import static org.junit.jupiter.api.DynamicTest.stream;
+//import static org.junit.jupiter.api.DynamicTest.stream;
 
 /**
  * @author  Jeramy Dickerson
@@ -32,7 +32,7 @@ public final class ArgCheck {
      * Returns either an empty Integer array or an array of 3 validated integers. 
      */
     public static int[] validateStartStrings(String[] args){
-        int[] validArray = new int[0];
+        int[] validArray = {0};
         if (args == null){ return validArray;}
 
         int validIntegerToFind = 0; 
@@ -43,14 +43,15 @@ public final class ArgCheck {
         
         //Loop through all arguments provided, searching for and storing the first 3 integers. Overkill for the assignment...
         for (String arg : args) {
+            System.out.println("Current arg is:" + arg);
             if (isInteger(arg)) {
                 switch (validIntegerToFind) {
                     case 0:
-                        rows = Math.min(MAXROWS, correctUserInput(Integer.parseInt(arg)));
+                        columns = Math.min(MAXCOLS, correctUserInput(Integer.parseInt(arg)));
                         validIntegerToFind++;
                         break;
                     case 1:
-                        columns = Math.min(MAXCOLS, correctUserInput(Integer.parseInt(arg)));
+                        rows = Math.min(MAXROWS, correctUserInput(Integer.parseInt(arg)));
                         validIntegerToFind++;
                         break;
                     case 2:
@@ -68,12 +69,13 @@ public final class ArgCheck {
         }
         if (computerProgram < 0) {computerProgram = 0;} //Default to no computer if nothing was selected.
         if (validIntegerToFind > 2){
-            validArray = new int[] {computerProgram, rows, columns, toWinLength};
+            validArray = new int[] {computerProgram, columns, rows, toWinLength};
             System.out.println(validArray);
             return validArray;
         }
         else{
             validArray = new int[] {computerProgram};
+            System.out.println(validArray);
             return validArray;
         }
     }
