@@ -56,25 +56,43 @@ public class Gomoku implements GomokuInterface{
     public int getNumInLineForWin() {return gameBoard.getWinCount();}
     
     public TurnResult handleClickAt(int row, int col){
-        var checkForDraw = gameBoard.listEmptySpots();
-        if (checkForDraw.isEmpty()){
+        if (isGameADraw()){
             return TurnResult.DRAW;
         }
-        if (currentTurn == computerTurn && computerSelection > 0){ //ensure a computer is playing and it is its turn.
-            var move = runComputerTurn();
-            if (move[0] == -1) { return TurnResult.DRAW; }
-            if ( gameBoard.attemptPlayAtSpot(move[0], move[1], computerTurn) ) { changePlayer(); }
-        }
-        else {
+
+        TurnResult winCondition;
+
+        if (computerSelection == 0) { // Two players, no checks needed, just process input
             if ( gameBoard.attemptPlayAtSpot(col, row, currentTurn)) { changePlayer(); }
+        }
+        else { //If player starts, do both, if computer starts, skip first 'handleClickAt' is program driven, skip player.
+            if (currentTurn != computerTurn){
+                if ( gameBoard.attemptPlayAtSpot(col, row, currentTurn)) { changePlayer(); }
+                winCondition = gameBoard.setTurnResult();
+                if (winCondition == TurnResult.RING_WINS) { return winCondition; }
+            }
+            var move = runComputerTurn();
+            if (move[0] == -1) { return TurnResult.DRAW; } //No moves can win
+            if ( gameBoard.attemptPlayAtSpot(move[0], move[1], computerTurn) ) { changePlayer(); }
         }
         return gameBoard.setTurnResult();
     }
 
+    private boolean isGameADraw(){
+        var checkForDraw = gameBoard.listEmptySpots();
+        if (checkForDraw.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
+
+
     public void initGame() {
         gameBoard.resetBoard();
+        changePlayer(); // We always toggle to the other player after a move. Game requirement is that the winner starts, so revert change.
         if (currentTurn == computerTurn && computerSelection > 0) {
-            runComputerTurn(); //We don't care about the return result, its the first move.
+            handleClickAt(0, 0); //Trigger computer move, it will recalculate it there.
         }
     }
 

@@ -24,6 +24,9 @@ public class Computer {
         int tempRow = 0;
         int offGridScaler = 1;
 
+        if (testList.isEmpty()) { return bestCrossSpot; }
+        else { bestCrossSpot = testList.get(0); } //We play this IF there is no possible winning move.
+
         // loop through all empty spots
         //System.out.println("STARTING THE SCORING SPREE!!!!!");
         for (int[] spot: testList){            

@@ -72,14 +72,20 @@ public class GameBoard {
     }
 
     public TurnResult setTurnResult(){
+        //System.out.println("\n\n\nEntering the check for turn result");
         int[] winnerCount = {0, 0}; //crossCount, ringCount
         var allDirectionArrays = grabAllPossibleDirections(); //Create a list of all possible win directions
 
         for(Square[] item: allDirectionArrays){ 
             winnerCount = new int[] {0, 0}; //reset the count for each new possible-win array.
+            //System.out.println("\nEntering the check for this array direction.");
             for (int index = 0; index < item.length; ++index){
+                //System.out.println("item value: " + item[index]);
                 updateWinnerCount(winnerCount, item[index]);
+                //System.out.println("winner 0: " + winnerCount[0] + " winner 1: "+ winnerCount[1]);
                 checkForWin(winnerCount);
+                //System.out.println("Turn result: " + winner);
+                if (winner == TurnResult.CROSS_WINS || winner == TurnResult.RING_WINS) {return winner;}
             }
         }
         return winner;
@@ -108,7 +114,7 @@ public class GameBoard {
         int rowIndex = rowStart, columnIndex = columnStart;
         //Boolean rowInRange = false;
         //Boolean columnInRange = false;
-        int maxSteps = Math.max(numberToWin, numberToWin);
+        int maxSteps = Math.max(maxColumns, maxRows);
         for(int step = 0; step < maxSteps; ++step){
             //rowInRange = false;
             //columnInRange = false;
@@ -139,6 +145,7 @@ public class GameBoard {
     }
 
     private void checkForWin(int[] winnerCount){
+        winner = TurnResult.GAME_NOT_OVER;  //Need this for game reset.
         //Due to how the game plays, we won't ever have both of these true at the same time.
         //So we don't need to make sure the other is not true.
         if (winnerCount[0] == numberToWin) {

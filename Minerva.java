@@ -86,7 +86,7 @@ public class Minerva {
             System.out.println("Ring High score: " + ringHighScore + " Ring best spot (" + bestRingSpot[0] + "," + bestRingSpot[1] + ")");
             System.out.println("Cross High score: " + crossHighScore + " Cross best spot (" + bestCrossSpot[0] + "," + bestCrossSpot[1] + ")");
         }
-        if (ringHighScore > crossHighScore) {return bestRingSpot;}
+        if (ringHighScore > crossHighScore + 0.0005) {return bestRingSpot;} //Had some precision errors ruining the math.
         else { return bestCrossSpot; }
     }
 }
