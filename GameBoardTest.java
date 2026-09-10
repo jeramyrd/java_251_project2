@@ -26,20 +26,20 @@ class GameBoardTest {
     void newBoardIsFullOfEmptySquares() {
         for(int row = 0; row < 3; ++row){
             for(int col = 0; col < 3; ++col){
-                assertEquals(Square.EMPTY,  board.getSquare(col, row));
+                assertEquals(Square.EMPTY,  board.getSpot(col, row));
             }
         }
     }
 
     @Test
     void boardIsMadeOfSquareEnums() {
-        assertInstanceOf(Square.class,  board.getSquare(1,1));
+        assertInstanceOf(Square.class,  board.getSpot(1,1));
     }
 
     @Test
     void throwsOutOfIndexError() {
         assertThrows(IndexOutOfBoundsException.class,
-            () -> board.getSquare(4,4),
+            () -> board.getSpot(4,4),
             "index out of bounds should throw");
     }
 
