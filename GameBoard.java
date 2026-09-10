@@ -25,7 +25,19 @@ public class GameBoard {
         resetBoard();
     }
 
-    private void resetBoard(){
+    public int getMaxColumns(){
+        return maxColumns;
+    }
+
+    public int getMaxRows(){
+        return maxRows;
+    }
+
+    public int getWinCount(){
+        return numberToWin;
+    }
+
+    public void resetBoard(){
         for (int row = 0; row < maxRows; ++row){
             for (int col = 0; col < maxColumns; ++col){
                 board[col][row] = Square.EMPTY;
@@ -33,13 +45,10 @@ public class GameBoard {
         }
     }
 
-    public Square getSquare(int col, int row){
-        return board[col][row];
-    }
-
     public Boolean attemptPlayAtSpot(int col, int row, Square player){
         if (isSpotOnBoard(col, row)) { //I don't like short-ciruit tests, but that could work here.
             if (isSpotFree(col, row)) {  //Play is valid
+                System.out.println("Attempting to play at {" + col + "," + row + ") for player" + player);
                 board[col][row] = player;
                 return true; 
             }
@@ -47,14 +56,19 @@ public class GameBoard {
         return false; //Play is not valid
     }
 
-    private Boolean isSpotOnBoard(int col, int row){
+    public Boolean isSpotOnBoard(int col, int row){
         if ((col >= 0 && col < maxColumns) && (row >= 0 && row < maxRows)) { return true; }
         return false;
     }
 
-    private Boolean isSpotFree(int col, int row){
+    public Boolean isSpotFree(int col, int row){
         if (board[col][row] == Square.EMPTY) { return true; }
         return false;
+    }
+
+    public Square getSpot(int col, int row){
+        if (isSpotOnBoard(col, row)) {return board[col][row];}
+        else {throw new IndexOutOfBoundsException("Access violation."); }
     }
 
     public TurnResult setTurnResult(){
@@ -120,7 +134,7 @@ public class GameBoard {
                 break;
             case EMPTY:
                 winnerCount[0] = 0;
-                winnerCount[1]= 0;
+                winnerCount[1] = 0;
         }
     }
 
@@ -135,24 +149,13 @@ public class GameBoard {
         }
     }
 
-}
-/*
-    private Square[][] gameBoard; 
-
-
-
-   
-    
-   
-    
-// Needed for my computer player math.
-    private List<int[]> listEmptySpots(){
+    public List<int[]> listEmptySpots(){
         List<int[]> emptySpots = new ArrayList<>();
-        for(int row = 0; row < userSelectedNumRows; ++row){
-            for (int col = 0; col < userSelectedNumCols; ++col){
+        for(int row = 0; row < maxRows; ++row){
+            for (int col = 0; col < maxColumns; ++col){
                 if (isSpotFree(col,row)) { emptySpots.add(new int[] {col, row}); } 
             }
         }
         return emptySpots;
     }
-*/
+}

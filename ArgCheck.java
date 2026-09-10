@@ -1,11 +1,23 @@
+import static org.junit.jupiter.api.DynamicTest.stream;
+
 /**
  * @author  Jeramy Dickerson
  * CS 251 with Professor Brooke Chenoweth - Fall 2026
  * 
- * ArgCheck is designed to handle main args to make it suitable for the program. 
+ * ArgCheck is designed to handle main args to make it suitable for the program.
+ * Any argument might hold a string indicating if a computer is to be used.
+ * Options (any combo of upper or lower case):
+ * None = no computer
+ * Computer = basic bruh computer - easy to beat.
+ * Minerva = God mode computer... Good luck :)
+ * Any additional string values are ignored.
+ * We will also look for up to three integers 
  * Cases we are OK with:
- * No args up to less than 3 -> An empty list is sent back
- * 3 or more int values, -> first 3 sanitized to be in 1 to 100 range. 
+ * 0, 1, or 2 integers -> An empty list is sent back
+ * 3 or more int values, -> first 3 sanitized to fit the screen, rest are ignored. 
+ * The return int[] will have a length of 1 or 4
+ * length 1 = computer program only
+ * length 4 = computer program + custom computer board. 
  */
 public final class ArgCheck {
 
@@ -23,11 +35,11 @@ public final class ArgCheck {
         int[] validArray = new int[0];
         if (args == null){ return validArray;}
 
-        
         int validIntegerToFind = 0; 
         int rows = 0;
         int columns = 0;
         int toWinLength = 0;
+        int computerProgram = -1; 
         
         //Loop through all arguments provided, searching for and storing the first 3 integers. Overkill for the assignment...
         for (String arg : args) {
@@ -50,13 +62,18 @@ public final class ArgCheck {
                         break;
                 }
             }
+            else {
+                computerProgram = searchForComputerVersion(arg, computerProgram);
+            }
         }
+        if (computerProgram < 0) {computerProgram = 0;} //Default to no computer if nothing was selected.
         if (validIntegerToFind > 2){
-            validArray = new int[] {rows, columns, toWinLength};
+            validArray = new int[] {computerProgram, rows, columns, toWinLength};
             System.out.println(validArray);
             return validArray;
         }
         else{
+            validArray = new int[] {computerProgram};
             return validArray;
         }
     }
@@ -101,6 +118,24 @@ public final class ArgCheck {
             x = Math.abs(x);
         }
         return x; // All is well!
+    }
+
+    // Select the computer version from the input string.
+    private static int searchForComputerVersion(String str, int currentProgram){
+        if (currentProgram < 0){ //Then look for good input
+            String uppercaseInpute = str.toUpperCase();
+            switch (uppercaseInpute){
+                case "NONE":
+                    return 0;
+                case "COMPUTER":
+                    return 1;
+                case "MINERVA":
+                    return 2;
+                default:
+                    return -1;
+            }
+        }
+        return currentProgram;
     }
 }
 

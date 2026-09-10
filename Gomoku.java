@@ -4,198 +4,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs251.project2.*;
+import cs251.project2.GomokuInterface.TurnResult;
 
 public class Gomoku implements GomokuInterface{
-
-    //Interface methods
-    public int getNumRows() {return userSelectedNumRows;}
-    public int getNumCols(){ return userSelectedNumCols;}
-    public int getNumInLineForWin() {return userSelectedNumInLineForWin;}
-    public TurnResult handleClickAt(int row, int col){
-        // Prevent out-of-bound events.
-        if (row >= userSelectedNumRows || col >= userSelectedNumCols) { return TurnResult.GAME_NOT_OVER;}
-        if (isSpotFree(col, row)){ 
-            gameBoard[col][row] = currentTurn; //TODO -> NEED TO CHANGE THIS TO playSpot
-            //changePlayer();
-            
-        // while(victoryIsBelongTo == TurnResult.GAME_NOT_OVER){
-            var computerMove = bestMove();
-            if (indexOnBoard(computerMove[0], computerMove[1])) {
-                gameBoard[computerMove[0]][computerMove[1]] = Square.CROSS;
-            }
-            else { return TurnResult.DRAW; }
-            //boardFullCheck(); //Draw if board is full (brute force check, not a smart check)
-            //changePlayer(); //game not over and change player.
-            isGameOver();
-        
-        //  computerMove = bestMove();
-        //  if (indexOnBoard(computerMove[0], computerMove[1])) {
-        //      gameBoard[computerMove[0]][computerMove[1]] = Square.RING;
-        //  }
-        // else { return TurnResult.DRAW; }
-            //boardFullCheck(); //Draw if board is full (brute force check, not a smart check)
-            //changePlayer(); //game not over and change player.
-        // isGameOver();
-        // }
-        }
-        return victoryIsBelongTo;
-    }
-    public void initGame() {
-        resetBoard();
-        victoryIsBelongTo = TurnResult.GAME_NOT_OVER;
-    }
-    public String getBoardString(){
-        StringBuilder boardSB = new StringBuilder();
-        for (int row = 0; row < userSelectedNumRows; ++row){
-            for (int col = 0; col < userSelectedNumCols; ++col){
-                boardSB.append(gameBoard[col][row].toChar());
-            }
-            boardSB.append('\n');
-        }
-        return boardSB.toString();
-    }
-    public Square getCurrentPlayer(){
-        return currentTurn;
-    }
-    public void initComputerPlayer(String difficultyLevel){
-    }
-
-
-    private int userSelectedNumCols = 0;
-    private int userSelectedNumRows = 0;
-    private int userSelectedNumInLineForWin = 0;
+    
+    private GameBoard gameBoard;
+    private int computerSelection = 0;
+    private Square computerTurn = Square.CROSS; //If a computer is used, it plays the CROSS.
     private Square currentTurn = Square.EMPTY;
-    private TurnResult victoryIsBelongTo = TurnResult.GAME_NOT_OVER;
+    private Minerva minervaPlayer;
+    private Computer computerPlayer;
+
 
     public Gomoku(String[] args){
         int[] validatedStartParameters = ArgCheck.validateStartStrings(args);
-        if (validatedStartParameters.length > 0){
-            userSelectedNumRows = validatedStartParameters[0];
-            userSelectedNumCols = validatedStartParameters[1];
-            userSelectedNumInLineForWin = validatedStartParameters[2];
+        computerSelection = validatedStartParameters[0];
+
+        if (validatedStartParameters.length > 1){ //only filled if valid.
+            gameBoard = new GameBoard(validatedStartParameters[1], validatedStartParameters[2], validatedStartParameters[3]);
         }
         else{
-            userSelectedNumRows = DEFAULT_NUM_ROWS;
-            userSelectedNumCols = DEFAULT_NUM_COLS;
-            userSelectedNumInLineForWin = SQUARES_IN_LINE_FOR_WIN;            
+
+            gameBoard = new GameBoard(DEFAULT_NUM_ROWS, DEFAULT_NUM_COLS, SQUARES_IN_LINE_FOR_WIN);            
         }
-        randomFirstPlayer();
+        minervaPlayer = new Minerva(gameBoard);
+        computerPlayer = new Computer(gameBoard);
+        selectFirstPlayer();
     }
 
-    private Square[][] gameBoard; 
-    private void resetBoard(){
-        gameBoard = new Square[userSelectedNumCols][userSelectedNumRows];
-        for (int row = 0; row < userSelectedNumRows; ++row){
-            for (int col = 0; col < userSelectedNumCols; ++col){
-                gameBoard[col][row] = Square.EMPTY;
-            }
-        }
-    }
-    private Boolean indexOnBoard(int col, int row){
-        if ((col >= 0 && col < userSelectedNumCols) && (row >= 0 && row < userSelectedNumRows)) { return true; }
-        return false;
-    }
-    private Boolean isSpotFree(int col, int row){
-        if (gameBoard[col][row] == Square.EMPTY) { return true; }
-        return false;
-    }
-    private Boolean isGameOver(){
-        int[] winnerCount = {0, 0}; //crossCount, ringCount
-        var allDirectionArrays = grabAllPossibleDirections();
-
-        for(Square[] item: allDirectionArrays){
-            updateWinnerCount(winnerCount,Square.EMPTY);
-            for (int index = 0; index < item.length; ++index){
-                updateWinnerCount(winnerCount, item[index]);
-                if (isThereAWinner(winnerCount)) {return true;}
-            }
-        }
-        System.out.println();
-        return false; 
-    }
-    private List<Square[]> grabAllPossibleDirections(){
-        List<Square[]> possibleWinArray = new ArrayList<>();
-        int[] diagonalUp = {-1, 1}; //column delta, row delta
-        int[] accross = {1, 0};
-        int[] diagonalDown = {1, 1};
-        int[] down = {0, 1};
-        
-        for (int columnSpotStart = 0, rowSpotStart = 0; columnSpotStart < 2*userSelectedNumCols - 1; ++columnSpotStart){
-            possibleWinArray.add(extractArray(columnSpotStart, rowSpotStart, diagonalUp));
-            possibleWinArray.add(extractArray(columnSpotStart, rowSpotStart, down));
-        }
-        for (int columnSpotStart = 0, rowSpotStart = -userSelectedNumRows + 1; rowSpotStart < userSelectedNumRows; ++rowSpotStart){
-            possibleWinArray.add(extractArray(columnSpotStart, rowSpotStart, diagonalDown));
-            possibleWinArray.add(extractArray(columnSpotStart, rowSpotStart, accross));
-        }
-        return possibleWinArray;
-    }
-    private Square[] extractArray(int columnStart, int rowStart, int[] direction){
-        List<Square> values = new ArrayList<>();
-        int rowIndex = rowStart, columnIndex = columnStart;
-        Boolean rowInRange = false;
-        Boolean columnInRange = false;
-        int maxSteps = Math.max(userSelectedNumCols, userSelectedNumRows);
-        for(int step = 0; step < maxSteps; ++step){
-            rowInRange = false;
-            columnInRange = false;
-            if (rowIndex >= 0 && rowIndex < userSelectedNumRows) { rowInRange = true; }
-            if (columnIndex >= 0 && columnIndex < userSelectedNumCols) { columnInRange = true; }
-            if (rowInRange && columnInRange ){ values.add(gameBoard[columnIndex][rowIndex]); }
-            columnIndex += direction[0];
-            rowIndex += direction[1];
-        }
-        return values.toArray(new Square[0]);
-    }
-    private void updateWinnerCount(int[] winnerCount, Square square){
-         switch (square) {
-            case CROSS:
-                ++winnerCount[0];
-                winnerCount[1] = 0;
-                break;
-            case RING:
-                ++winnerCount[1];
-                winnerCount[0] = 0;
-                break;
-            case EMPTY:
-                winnerCount[0] = 0;
-                winnerCount[1]= 0;
-        }
-    }
-    private Boolean isThereAWinner(int[] winnerCount){
-        if (winnerCount[0] == userSelectedNumInLineForWin) {
-            victoryIsBelongTo = TurnResult.CROSS_WINS;
-            return true;
-        }
-        if (winnerCount[1] == userSelectedNumInLineForWin) {
-            victoryIsBelongTo = TurnResult.RING_WINS;
-            return true;
-        }
-        return false; //No winner :(
-    }
-    private List<int[]> listEmptySpots(){
-        List<int[]> emptySpots = new ArrayList<>();
-        for(int row = 0; row < userSelectedNumRows; ++row){
-            for (int col = 0; col < userSelectedNumCols; ++col){
-                if (isSpotFree(col,row)) { emptySpots.add(new int[] {col, row}); } 
-            }
-        }
-        return emptySpots;
-    }
-
-
-
-
-
-    private void randomFirstPlayer(){
+    private void selectFirstPlayer(){
+        //Not fair that the human always starts, so we randomly pick.
         Random coin = new Random();
         if(coin.nextBoolean()){
-            currentTurn = Square.RING;
+            currentTurn = Square.RING; //Human, if used, goes first. ;)
         }
         else{
-            currentTurn = Square.RING;
+            currentTurn = Square.CROSS; //computer, if used goes first.
         }
     }
+
     private void changePlayer(){
         if (currentTurn == Square.CROSS){
             currentTurn = Square.RING;
@@ -205,101 +52,72 @@ public class Gomoku implements GomokuInterface{
         }
     }
 
-    private int[] bestMove(){
-        var testList = listEmptySpots();
-        double ringHighScore = 0;
-        double crossHighScore = 0;
-        int[] bestRingSpot = {-1, -1};
-        int[] bestCrossSpot = {-1, -1};
-        double scale = 1.0 / (4.0 * userSelectedNumInLineForWin);
-        //System.out.println("Scale is: " + scale);
-        int[] directionColumn = {1, 0, 1, -1};
-        int[] directionRow = {0, 1, 1, 1};
-        int crossCount = 0, ringCount = 0;
-        double ringLocalScore = 0;
-        double crossLocalScore = 0;
-        int tempCol = 0;
-        int tempRow = 0;
-        int offGridScaler = 1;
-
-        //loop through all empty spots
-       // System.out.println("STARTING THE SCORING SPREE!!!!!");
-        for (int[] spot: testList){            
-        //    System.out.println("Empty Spot (" + spot[0] + "," + spot[1] +") ");
-            //Need to calculate 4 different directions
-            ringLocalScore = 0;
-            crossLocalScore = 0;
-            for (int directionIndex = 0; directionIndex < 4; ++directionIndex){
-             //   System.out.println("Direction: " + directionIndex + " ---> 0 right 1 down 2 Dup 3 Ddown");
-
-                //Now we have userSelectedNumInLineForWin sets to calculate....
-                for (int setShift = userSelectedNumInLineForWin - 1; setShift >= 0; --setShift ){
-              //      System.out.println("Setshift is " + setShift);
-                    tempCol = spot[0]-directionColumn[directionIndex]*setShift;
-                    tempRow = spot[1]-directionRow[directionIndex]*setShift;
-              //      System.out.println("SetShifted Start spot is (" + tempCol + "," + tempRow +") ");
-                    ringCount = 0;
-                    crossCount = 0;
-                    offGridScaler = 1;
-
-                    //Now finally, calculate the block. 
-                    for (int i = 0; i < userSelectedNumInLineForWin; ++i){
-                   //     System.out.println("Array Spot is currently (" + tempCol + "," + tempRow +") ");
-                        if (indexOnBoard(tempCol, tempRow)){
-                            switch (gameBoard[tempCol][tempRow]) {
-                                case CROSS:
-                                    ++crossCount;
-                                    break;
-                                case RING:
-                                    ++ringCount;
-                                    break;
-                                case EMPTY:
-                                    break;
-                            }
-                        }
-                        else { offGridScaler = 0; }
-                        tempCol += directionColumn[directionIndex];
-                        tempRow += directionRow[directionIndex];
-                    }
-                //    System.out.println("Offgrid (zero is yes): " + offGridScaler);
-                //    System.out.println("crossCount = " + crossCount + " So math is:" + Math.pow(10, crossCount));
-                //    System.out.println("ringCount = " + ringCount + " So math is:" + Math.pow(10, ringCount));
-                    //finished the set - add to total
-                //    System.out.println("Cross score add would be: " + offGridScaler*scale*Math.pow(10, crossCount));
-                //    System.out.println("Ring score add would be: " + offGridScaler*scale*Math.pow(10, ringCount));
-                    if (ringCount == 0) { crossLocalScore += offGridScaler*scale*Math.pow(10, crossCount);}
-                    if (crossCount == 0) { ringLocalScore += offGridScaler*scale*Math.pow(10, ringCount);}
-                //    System.out.println("Ring Local score: " + ringLocalScore + " Cross Local Score: " + crossLocalScore);
-                }
-            }
-            if (ringLocalScore > ringHighScore) {
-                ringHighScore = ringLocalScore;
-                bestRingSpot = spot;
-            }
-            if (crossLocalScore > crossHighScore) {
-                crossHighScore = crossLocalScore;
-                bestCrossSpot = spot;
-            }
-            System.out.println("Ring High score: " + ringHighScore + " Ring best spot (" + bestRingSpot[0] + "," + bestRingSpot[1] + ")");
-            System.out.println("Cross High score: " + crossHighScore + " Cross best spot (" + bestCrossSpot[0] + "," + bestCrossSpot[1] + ")");
+    //Interface methods
+    public int getNumRows() {return gameBoard.getMaxRows();}
+    public int getNumCols(){ return gameBoard.getMaxColumns();}
+    public int getNumInLineForWin() {return gameBoard.getWinCount();}
+    
+    public TurnResult handleClickAt(int row, int col){
+        var checkForDraw = gameBoard.listEmptySpots();
+        if (checkForDraw.isEmpty()){
+            return TurnResult.DRAW;
         }
-        if (ringHighScore > crossHighScore) {return bestRingSpot;}
-        else { return bestCrossSpot; }
+        if (currentTurn == computerTurn && computerSelection > 0){ //ensure a computer is playing and it is its turn.
+            var move = runComputerTurn();
+            if (move[0] == -1) { return TurnResult.DRAW; }
+            if ( gameBoard.attemptPlayAtSpot(move[0], move[1], computerTurn) ) { changePlayer(); }
+        }
+        else {
+            if ( gameBoard.attemptPlayAtSpot(col, row, currentTurn)) { changePlayer(); }
+        }
+        return gameBoard.setTurnResult();
     }
 
+    public void initGame() {
+        gameBoard.resetBoard();
+        if (currentTurn == computerTurn) {
+            runComputerTurn(); //We don't care about the return result, its the first move.
+        }
+    }
 
+    private int[] runComputerTurn(){
+        int[] move = {0,0};
+        switch (computerSelection){
+                case 1:
+                    move = computerPlayer.bestMove();
+                    break;
+                case 2:
+                    move = minervaPlayer.bestMove();
+                    break;
+                default:
+                    //Something is broken, revert to a human player.
+                    throw new UnsupportedOperationException("Somehow you think you are running a computer, but I don't know which one.");
+        }
+        return move;
+    }
+
+    public String getBoardString(){
+        StringBuilder boardSB = new StringBuilder();
+        for (int row = 0; row < gameBoard.getMaxRows(); ++row){
+            for (int col = 0; col < gameBoard.getMaxColumns(); ++col){
+                boardSB.append(gameBoard.getSpot(col, row).toChar());
+            }
+            boardSB.append('\n');
+        }
+        return boardSB.toString();
+    }
+    public Square getCurrentPlayer(){
+        return currentTurn;
+    }
+    public void initComputerPlayer(String difficultyLevel){
+        //We are not using this method to create the Computer player
+        //I wanted a way to pick everything from command line arguments.
+    }
 
     public static void main ( String [] args ) {
         Gomoku game = new Gomoku(args);
-        game.initComputerPlayer("NONE");
-        //if ( args.length > 0) {
-        //    game.initComputerPlayer(args[0]);
-        // }
         GomokuGUI.showGUI(game);
     }
-
-
-
 }
 
 /*
