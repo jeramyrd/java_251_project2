@@ -1,15 +1,26 @@
-import java.util.List;
-
+/**
+ * @author  Jeramy Dickerson
+ * CS 251 with Professor Brooke Chenoweth - Fall 2026
+ * Project 2 - Gomoku Game
+ * 
+ * basic bruh computer - easy to beat. But extremely selfish. It will just 'got for it' and ignore the player.
+ * Harder to beat if it goes first.
+ * Requires the reference object of the game board.
+ */
 public class Computer {
     
     private GameBoard gameBoard;
-    List<int[]> emptySpotsList;
 
     Computer(GameBoard board){
         gameBoard = board;
     }
     
-    //As a reminder the computer is always the CROSS.
+    /**
+     * As a reminder the computer is always the CROSS.
+     * Uses the current board setup to determine the next best move to get 
+     * a win. More or less ignores the human player. 
+     * @return int[] = {col, row} -> location of computer's move.
+     */ 
     public int[] bestMove(){
         var testList = gameBoard.listEmptySpots();
         double crossHighScore = 0;

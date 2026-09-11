@@ -1,17 +1,28 @@
-import java.util.List;
 import cs251.project2.GomokuInterface.Square;
 import cs251.project2.GomokuInterface.TurnResult;
 
+/**
+ * @author  Jeramy Dickerson
+ * CS 251 with Professor Brooke Chenoweth - Fall 2026
+ * Project 2 - Gomoku Game
+ * 
+ * God mode computer - hard (impossible for me) to beat. 
+ * Requires the reference object of the game board.
+ */
 public class Minerva {
     
     private GameBoard gameBoard;
-    List<int[]> emptySpotsList;
 
     Minerva(GameBoard board){
         gameBoard = board;
     }
      
-    // Remember the computer is always the CROSS
+    /**
+     * As a reminder the computer is always the CROSS.
+     * Uses the current board setup to determine the next best move to get 
+     * a win. 
+     * @return int[] = {col, row} -> location of computer's move.
+     */ 
     public int[] bestMove(){
         var testList = gameBoard.listEmptySpots();
         double ringHighScore = 0;
@@ -106,9 +117,9 @@ public class Minerva {
             System.out.println("Ring High score: " + ringHighScore + " Ring best spot (" + bestRingSpot[0] + "," + bestRingSpot[1] + ")");
             System.out.println("Cross High score: " + crossHighScore + " Cross best spot (" + bestCrossSpot[0] + "," + bestCrossSpot[1] + ")");
         }
-        if (ringHighScore > crossHighScore + 0.0005) {
+        if (ringHighScore > crossHighScore + 0.0005) { //Had some precision errors ruining the math.
             return bestRingSpot;
-        } //Had some precision errors ruining the math.
+        } 
         else { 
             return bestCrossSpot;
         }

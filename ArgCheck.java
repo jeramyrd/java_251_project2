@@ -1,35 +1,45 @@
 /**
  * @author  Jeramy Dickerson
  * CS 251 with Professor Brooke Chenoweth - Fall 2026
+ * Project 2 - Gomoku Game
  * 
  * ArgCheck is designed to handle main args to make it suitable for the program.
  * Any argument might hold a string indicating if a computer is to be used.
  * Options (any combo of upper or lower case):
- * None = no computer
- * Computer = basic bruh computer - easy to beat.
- * Minerva = God mode computer... Good luck :)
+ * "None" = no computer
+ * "Computer" = basic bruh computer - easy to beat, IF you go first...
+ * "Minerva" = God mode computer... I can't beat it yet :)
  * Any additional string values are ignored.
  * We will also look for up to three integers 
- * Cases we are OK with:
- * 0, 1, or 2 integers -> An empty list is sent back
+ * 0, 1, or 2 integers -> An empty list is sent back and default board values are used.
  * 3 or more int values, -> first 3 sanitized to fit the screen, rest are ignored. 
- * The return int[] will have a length of 1 or 4
- * length 1 = computer program only
- * length 4 = computer program + custom computer board. 
  */
 public final class ArgCheck {
 
-    // Prevent instantiation
+    /**
+     *  Prevent instantiation
+     */
     private ArgCheck() {}
+    /**
+     * Max columns allowed so that the game fits on my screen.
+     */
+    
     public final static int MAXCOLS = 80;
+    /**
+     * Max columns allowed so that the game fits on my screen.
+     */
     public final static int MAXROWS = 40;
+    
+    /**
+     * A non-square board is fine, but we want the max win count to be <= the smallest dimension of the board.
+     */
     public final static int MAXNUMTOWIN = Math.min(MAXCOLS, MAXROWS);
     
     /**
-     * @param args can contain whatever you want. 
-     * Returns either an empty Integer array or an array of 3 validated integers. 
+     * @param args An array of strings that can contain whatever you want. 
      * @return a validated list of integers that the main program will use to 
-     *    setup the game.
+     *    setup the game. first number is the type of computer player, next 3 (optionally) 
+     *    are custom board parameters.
      */
     public static int[] validateStartStrings(String[] args){ 
         int[] validArray = {0};
@@ -109,7 +119,6 @@ public final class ArgCheck {
      * Sanitizes a user-supplied integer:  
      *  – maps 0 → 1 with a warning,  
      *  – maps negative values → their absolute value,  
-     *  – Finally if x > 100, reduce to 100 max. 
      *
      * @param x the raw integer to correct
      * @return a positive non-zero integer
