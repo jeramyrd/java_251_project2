@@ -51,9 +51,15 @@ public class Gomoku implements GomokuInterface{
     }
 
     //Interface methods
-    public int getNumRows() {return gameBoard.getMaxRows();}
-    public int getNumCols(){ return gameBoard.getMaxColumns();}
-    public int getNumInLineForWin() {return gameBoard.getWinCount();}
+    public int getNumRows() {
+        return gameBoard.getMaxRows();
+    }
+    public int getNumCols() { 
+        return gameBoard.getMaxColumns();
+    }
+    public int getNumInLineForWin() {
+        return gameBoard.getWinCount();
+    }
     
     public TurnResult handleClickAt(int row, int col){
         if (isGameADraw()){
@@ -63,17 +69,30 @@ public class Gomoku implements GomokuInterface{
         TurnResult winCondition;
 
         if (computerSelection == 0) { // Two players, no checks needed, just process input
-            if ( gameBoard.attemptPlayAtSpot(col, row, currentTurn)) { changePlayer(); }
+            if ( gameBoard.attemptPlayAtSpot(col, row, currentTurn)) {
+                changePlayer(); 
+            }
         }
         else { //If player starts, do both, if computer starts, skip first 'handleClickAt' is program driven, skip player.
             if (currentTurn != computerTurn){
-                if ( gameBoard.attemptPlayAtSpot(col, row, currentTurn)) { changePlayer(); }
+                if ( gameBoard.attemptPlayAtSpot(col, row, currentTurn)) { 
+                    changePlayer(); 
+                }
                 winCondition = gameBoard.setTurnResult();
-                if (winCondition == TurnResult.RING_WINS) { return winCondition; }
+                if (winCondition == TurnResult.RING_WINS) { 
+                    return winCondition; 
+                }
             }
             var move = runComputerTurn();
-            if (move[0] == -1) { return TurnResult.DRAW; } //No moves can win
-            if ( gameBoard.attemptPlayAtSpot(move[0], move[1], computerTurn) ) { changePlayer(); }
+            System.out.println("Just recieved the computer move");
+            if (move[0] == -1) { //No moves can win
+                return TurnResult.DRAW; 
+            } 
+            if ( gameBoard.attemptPlayAtSpot(move[0], move[1], computerTurn) ) { 
+                changePlayer(); 
+                System.out.println("Just played from the handler the computer move and changed players.");
+            }
+
         }
         return gameBoard.setTurnResult();
     }
@@ -99,15 +118,14 @@ public class Gomoku implements GomokuInterface{
     private int[] runComputerTurn(){
         int[] move = {0,0};
         switch (computerSelection){
-                case 1:
-                    move = computerPlayer.bestMove();
-                    break;
-                case 2:
-                    move = minervaPlayer.bestMove();
-                    break;
-                default:
-                    //Something is broken, revert to a human player.
-                    throw new UnsupportedOperationException("Somehow you think you are running a computer, but I don't know which one.");
+            case 1:
+                move = computerPlayer.bestMove();
+                break;
+            case 2:
+                move = minervaPlayer.bestMove();
+                break;
+            default:
+                throw new UnsupportedOperationException("Somehow you think you are running a computer, but I don't know which one.");
         }
         return move;
     }
@@ -165,7 +183,6 @@ GomokuInterface.TurnResult handleClickAt(int row, int col)
 void initComputerPlayer(String opponent)
 void initGame()
 Square.toChar method 
--, O, X and newline
 
 GomokuInterface.Square
 CROSS, EMPTY, RING

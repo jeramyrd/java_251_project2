@@ -24,12 +24,17 @@ public class Computer {
         int tempRow = 0;
         int offGridScaler = 1;
 
-        if (testList.isEmpty()) { return bestCrossSpot; }
-        else { bestCrossSpot = testList.get(0); } //We play this IF there is no possible winning move.
+        if (testList.isEmpty()) {
+            return bestCrossSpot;
+        }
+        else { 
+            bestCrossSpot = testList.get(0); //We play this IF there is no possible winning move.
+        } 
 
         // loop through all empty spots
         //System.out.println("STARTING THE SCORING SPREE!!!!!");
-        for (int[] spot: testList){            
+        for (int[] spot: testList){       
+                 
             //System.out.println("Empty Spot (" + spot[0] + "," + spot[1] +") ");
             // Need to calculate 4 different directions
             crossLocalScore = 0;
@@ -51,6 +56,9 @@ public class Computer {
                             switch (gameBoard.getSpot(tempCol, tempRow)) {
                                 case CROSS:
                                     ++crossCount;
+                                    if (crossCount == gameBoard.getWinCount()) {
+                                        return spot;
+                                    }
                                     break;
                                 case RING:
                                     ++ringCount;
@@ -59,7 +67,9 @@ public class Computer {
                                     break;
                             }
                         }
-                        else { offGridScaler = 0; }
+                        else { 
+                            offGridScaler = 0;
+                        }
                         tempCol += directionColumn[directionIndex];
                         tempRow += directionRow[directionIndex];
                     }
@@ -69,7 +79,9 @@ public class Computer {
                     //finished the set - add to total
                     //System.out.println("Cross score add would be: " + offGridScaler*scale*Math.pow(10, crossCount));
                     //System.out.println("Ring score add would be: " + offGridScaler*scale*Math.pow(10, ringCount));
-                    if (ringCount == 0) { crossLocalScore += offGridScaler*scale*Math.pow(10, crossCount);}
+                    if (ringCount == 0) { 
+                        crossLocalScore += offGridScaler*scale*Math.pow(10, crossCount);
+                    }
                     //System.out.println("Ring Local score: " + ringLocalScore + " Cross Local Score: " + crossLocalScore);
                 }
             }

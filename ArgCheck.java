@@ -1,5 +1,3 @@
-//import static org.junit.jupiter.api.DynamicTest.stream;
-
 /**
  * @author  Jeramy Dickerson
  * CS 251 with Professor Brooke Chenoweth - Fall 2026
@@ -30,10 +28,14 @@ public final class ArgCheck {
     /**
      * @param args can contain whatever you want. 
      * Returns either an empty Integer array or an array of 3 validated integers. 
+     * @return a validated list of integers that the main program will use to 
+     *    setup the game.
      */
-    public static int[] validateStartStrings(String[] args){
+    public static int[] validateStartStrings(String[] args){ 
         int[] validArray = {0};
-        if (args == null){ return validArray;}
+        if (args == null){ 
+            return validArray;
+        }
 
         int validIntegerToFind = 0; 
         int rows = 0;
@@ -67,7 +69,9 @@ public final class ArgCheck {
                 computerProgram = searchForComputerVersion(arg, computerProgram);
             }
         }
-        if (computerProgram < 0) {computerProgram = 0;} //Default to no computer if nothing was selected.
+        if (computerProgram < 0) { //Default to no computer if nothing was selected.
+            computerProgram = 0;
+        } 
         if (validIntegerToFind > 2){
             validArray = new int[] {computerProgram, columns, rows, toWinLength};
             System.out.println(validArray);

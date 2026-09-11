@@ -56,19 +56,33 @@ public class GameBoard {
         return false; //Play is not valid
     }
 
+    public void resetSpot(int col, int row){
+        if (isSpotOnBoard(col, row)) { //I don't like short-ciruit tests, but that could work here.
+            board[col][row] = Square.EMPTY;
+        }
+    }
+
     public Boolean isSpotOnBoard(int col, int row){
-        if ((col >= 0 && col < maxColumns) && (row >= 0 && row < maxRows)) { return true; }
+        if ((col >= 0 && col < maxColumns) && (row >= 0 && row < maxRows)) { 
+            return true;
+        }
         return false;
     }
 
     public Boolean isSpotFree(int col, int row){
-        if (board[col][row] == Square.EMPTY) { return true; }
+        if (board[col][row] == Square.EMPTY) {
+            return true; 
+        }
         return false;
     }
 
     public Square getSpot(int col, int row){
-        if (isSpotOnBoard(col, row)) {return board[col][row];}
-        else {throw new IndexOutOfBoundsException("Access violation."); }
+        if (isSpotOnBoard(col, row)) {
+            return board[col][row];
+        }
+        else {
+            throw new IndexOutOfBoundsException("Access violation.");
+        }
     }
 
     public TurnResult setTurnResult(){
@@ -85,7 +99,9 @@ public class GameBoard {
                 //System.out.println("winner 0: " + winnerCount[0] + " winner 1: "+ winnerCount[1]);
                 checkForWin(winnerCount);
                 //System.out.println("Turn result: " + winner);
-                if (winner == TurnResult.CROSS_WINS || winner == TurnResult.RING_WINS) {return winner;}
+                if (winner == TurnResult.CROSS_WINS || winner == TurnResult.RING_WINS) {
+                    return winner;
+                }
             }
         }
         return winner;
@@ -121,7 +137,9 @@ public class GameBoard {
             //if (rowIndex >= 0 && rowIndex < maxRows) { rowInRange = true; }
             //if (columnIndex >= 0 && columnIndex < maxColumns) { columnInRange = true; }
             //if (rowInRange && columnInRange ){ values.add(board[columnIndex][rowIndex]); }
-            if ( isSpotOnBoard(columnIndex, rowIndex)) { values.add(board[columnIndex][rowIndex]); };
+            if ( isSpotOnBoard(columnIndex, rowIndex)) {
+                values.add(board[columnIndex][rowIndex]);
+            }
             columnIndex += direction[0];
             rowIndex += direction[1];
         }
@@ -129,7 +147,7 @@ public class GameBoard {
     }
 
     private void updateWinnerCount(int[] winnerCount, Square square){
-         switch (square) {
+        switch (square) {
             case CROSS:
                 ++winnerCount[0];
                 winnerCount[1] = 0;
@@ -160,7 +178,9 @@ public class GameBoard {
         List<int[]> emptySpots = new ArrayList<>();
         for(int row = 0; row < maxRows; ++row){
             for (int col = 0; col < maxColumns; ++col){
-                if (isSpotFree(col,row)) { emptySpots.add(new int[] {col, row}); } 
+                if (isSpotFree(col,row)) { 
+                    emptySpots.add(new int[] {col, row});
+                } 
             }
         }
         return emptySpots;

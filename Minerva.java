@@ -1,4 +1,6 @@
 import java.util.List;
+import cs251.project2.GomokuInterface.Square;
+import cs251.project2.GomokuInterface.TurnResult;
 
 public class Minerva {
     
@@ -34,6 +36,15 @@ public class Minerva {
             // Need to calculate 4 different directions
             ringLocalScore = 0;
             crossLocalScore = 0;
+
+            gameBoard.attemptPlayAtSpot(spot[0],spot[1], Square.CROSS);
+            if (gameBoard.setTurnResult() == TurnResult.CROSS_WINS) {
+                gameBoard.resetSpot(spot[0], spot[1]);
+                gameBoard.setTurnResult();
+                return spot;
+            }
+            gameBoard.resetSpot(spot[0], spot[1]);
+
             for (int directionIndex = 0; directionIndex < 4; ++directionIndex){
                 //System.out.println("Direction: " + directionIndex + " ---> 0 right 1 down 2 Dup 3 Ddown");
                 // Now we have userSelectedNumInLineForWin sets to calculate....
@@ -52,6 +63,9 @@ public class Minerva {
                             switch (gameBoard.getSpot(tempCol, tempRow)) {
                                 case CROSS:
                                     ++crossCount;
+                                    if (crossCount == gameBoard.getWinCount()) {
+                                        return spot;
+                                    }
                                     break;
                                 case RING:
                                     ++ringCount;
@@ -60,7 +74,9 @@ public class Minerva {
                                     break;
                             }
                         }
-                        else { offGridScaler = 0; }
+                        else { 
+                            offGridScaler = 0;
+                        }
                         tempCol += directionColumn[directionIndex];
                         tempRow += directionRow[directionIndex];
                     }
@@ -70,8 +86,12 @@ public class Minerva {
                     //finished the set - add to total
                     //System.out.println("Cross score add would be: " + offGridScaler*scale*Math.pow(10, crossCount));
                     //System.out.println("Ring score add would be: " + offGridScaler*scale*Math.pow(10, ringCount));
-                    if (ringCount == 0) { crossLocalScore += offGridScaler*scale*Math.pow(10, crossCount);}
-                    if (crossCount == 0) { ringLocalScore += offGridScaler*scale*Math.pow(10, ringCount);}
+                    if (ringCount == 0) { 
+                        crossLocalScore += offGridScaler*scale*Math.pow(10, crossCount);
+                    }
+                    if (crossCount == 0) { 
+                        ringLocalScore += offGridScaler*scale*Math.pow(10, ringCount);
+                    }
                     //System.out.println("Ring Local score: " + ringLocalScore + " Cross Local Score: " + crossLocalScore);
                 }
             }
@@ -86,7 +106,11 @@ public class Minerva {
             System.out.println("Ring High score: " + ringHighScore + " Ring best spot (" + bestRingSpot[0] + "," + bestRingSpot[1] + ")");
             System.out.println("Cross High score: " + crossHighScore + " Cross best spot (" + bestCrossSpot[0] + "," + bestCrossSpot[1] + ")");
         }
-        if (ringHighScore > crossHighScore + 0.0005) {return bestRingSpot;} //Had some precision errors ruining the math.
-        else { return bestCrossSpot; }
+        if (ringHighScore > crossHighScore + 0.0005) {
+            return bestRingSpot;
+        } //Had some precision errors ruining the math.
+        else { 
+            return bestCrossSpot;
+        }
     }
 }
